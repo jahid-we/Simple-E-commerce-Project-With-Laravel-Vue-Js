@@ -9,19 +9,22 @@ const login = async () => {
     loading.value = true;
     try {
         if (!email.value) {
-            alert("❌ Please enter your email");
+            // alert("❌ Please enter your email");
+            errorToast("Please enter your email");
             return;
         }
         let res = await axios.post(`/user-login/${email.value}`);
         if (res.data.msg === true) {
             localStorage.setItem("email", email.value);
-            alert("✅ OTP sent to your email");
+            // alert("✅ OTP sent to your email");
+            successToast("OTP sent to your email");
             setTimeout(() => {
                 window.location.href = "/verify";
             },1000);
         }
     } catch (error) {
-        console.log("Error logging in:", error);
+        errorToast("Error sending OTP");
+        console.log("Error sending OTP");
     }finally {
         loading.value = false;
     }

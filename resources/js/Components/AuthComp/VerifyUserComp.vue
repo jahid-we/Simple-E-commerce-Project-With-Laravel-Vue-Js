@@ -8,18 +8,22 @@ const verify = async () => {
     try {
         let email = localStorage.getItem("email");
         if(!email) {
-            alert("❌ Email not found");
+            // alert("❌ Email not found");
+            errorToast(" Email not found");
             return;
         }else if(!otp.value) {
-            alert("❌ Please enter verification code");
+            // alert("❌ Please enter verification code");
+            errorToast(" Please enter verification code");
             return;
         }else if(otp.value.length !== 6) {
-            alert("❌ Verification code must be 6 digits");
+            // alert("❌ Verification code must be 6 digits");
+            errorToast(" Verification code must be 6 digits");
             return;
         }
         let res = await axios.post(`/verify-otp/${email}/${otp.value}`);
         if (res.data.msg === true) {
-            alert("✅ Verification successful");
+            // alert("✅ Verification successful");
+            successToast("Verification successful");
             setTimeout(() => {
                 if(sessionStorage.getItem("last_location")){
                         window.location.href=sessionStorage.getItem("last_location")
@@ -30,7 +34,8 @@ const verify = async () => {
             },1000);
         }
     } catch (error) {
-        alert(error.response.data.data);
+        // alert(error.response.data.data);
+        errorToast(error.response.data.data);
     }finally {
         loading.value = false;
     }

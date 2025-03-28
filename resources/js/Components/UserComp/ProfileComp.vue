@@ -78,56 +78,75 @@ const ProfileCreateOrUpdate = async () => {
        }
     try {
         if(customer.value.name == '') {
-            alert('❌ Please enter customer name');
+            // alert('❌ Please enter customer name');
+            errorToast('Please enter customer name');
             return;
         }else if(customer.value.address == '') {
-            alert('❌ Please enter customer address');
+            // alert('❌ Please enter customer address');
+            errorToast('Please enter customer address');
             return;
         }else if(customer.value.city == '') {
-            alert('❌ Please enter customer city');
+            // alert('❌ Please enter customer city');
+            errorToast('Please enter customer city');
             return;
         }else if(customer.value.state == '') {
-            alert('❌ Please enter customer state');
+            // alert('❌ Please enter customer state');
+            errorToast('Please enter customer state');
             return;
         }else if(customer.value.postcode == '') {
-            alert('❌ Please enter customer postcode');
+            // alert('❌ Please enter customer postcode');
+            errorToast('Please enter customer postcode');
             return;
         }else if(customer.value.country == '') {
-            alert('❌ Please enter customer country');
+            // alert('❌ Please enter customer country');
+            errorToast('Please enter customer country');
             return;
         }else if(customer.value.phone == '') {
-            alert('❌ Please enter customer phone');
+            // alert('❌ Please enter customer phone');
+            errorToast('Please enter customer phone');
+            return;
+        }else if(customer.value.fax == '') {
+            // alert('❌ Please enter customer fax');
+            errorToast('Please enter customer fax');
             return;
         }else if(shipping.value.name == '') {
-            alert('❌ Please enter shipping name');
+            // alert('❌ Please enter shipping name');
+            errorToast('Please enter shipping name');
             return;
         }else if(shipping.value.address == '') {
-            alert('❌ Please enter shipping address');
+            // alert('❌ Please enter shipping address');
+            errorToast('Please enter shipping address');
             return;
         }else if(shipping.value.city == '') {
-            alert('❌ Please enter shipping city');
+            // alert('❌ Please enter shipping city');
+            errorToast('Please enter shipping city');
             return;
         }else if(shipping.value.state == '') {
-            alert('❌ Please enter shipping state');
+            // alert('❌ Please enter shipping state');
+            errorToast('Please enter shipping state');
             return;
         }else if(shipping.value.postcode == '') {
-            alert('❌ Please enter shipping postcode');
+            // alert('❌ Please enter shipping postcode');
+            errorToast('Please enter shipping postcode');
             return;
         }else if(shipping.value.country == '') {
-            alert('❌ Please enter shipping country');
+            // alert('❌ Please enter shipping country');
+            errorToast('Please enter shipping country');
             return;
         }else if(shipping.value.phone == '') {
-            alert('❌ Please enter shipping phone');
+            // alert('❌ Please enter shipping phone');
+            errorToast('Please enter shipping phone');
             return;
         }
 
         let res = await axios.post('/update-or-create-customerProfile', postBody);
         if(res.data.msg == true) {
-            alert ( "✅"+res.data.data || '✅ Profile updated successfully!');
+            // alert ( "✅"+res.data.data || '✅ Profile updated successfully!');
+            successToast('Profile updated successfully!');
         }
 
     }catch (error) {
-        alert(error);
+        errorToast('Error updating profile');
     }
 }
 

@@ -39,10 +39,12 @@ const totalPrice = async () => {
 const remove = async (ProductId) => {
     try {
         await axios.post(`/delete-product-cart/${ProductId}`);
-        alert("✅ Product removed from cart successfully!");
+        // alert("✅ Product removed from cart successfully!");
+        successToast("Product removed from cart successfully!");
         getCartList();
     } catch (error) {
-        console.log("❌ Error removing product from cart");
+        // console.log("❌ Error removing product from cart");
+        errorToast("Error removing product from cart");
     }
 };
 

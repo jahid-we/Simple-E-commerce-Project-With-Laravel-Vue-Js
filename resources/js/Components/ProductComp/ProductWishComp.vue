@@ -22,10 +22,12 @@ const back = () => {
 const removeWish = async (id) => {
     try {
         await axios.post(`/delete-product-wish/${id}`);
-        alert("✅ Product removed from wishlist successfully!");
+        // alert("✅ Product removed from wishlist successfully!");
+        successToast("Product removed from wishlist successfully!");
         getWishList();
     } catch (error) {
-        console.log("❌ Error removing product from wishlist");
+        // console.log("❌ Error removing product from wishlist");
+        errorToast("Error removing product from wishlist");
     }
 };
 

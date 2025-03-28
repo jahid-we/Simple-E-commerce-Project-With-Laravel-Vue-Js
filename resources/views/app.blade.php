@@ -28,6 +28,7 @@
 
     <link rel="stylesheet" href="{{asset('assets/css/slick.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/slick-theme.css')}}">
+    <link href="{{asset('assets/css/toastify.min.css')}}" rel="stylesheet" />
 
     <link rel="stylesheet" href="{{asset('assets/css/responsive.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
@@ -37,7 +38,9 @@
     <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
     <script src="{{asset('assets/js/jquery-3.6.0.min.js')}}"></script>
     <script src="{{asset('assets/js/axios.min.js')}}"></script>
-    
+    <script src="{{asset('assets/js/toastify-js.js')}}"></script>
+    <script src="{{asset('assets/js/config.js')}}"></script>
+
     @vite(['resources/js/app.js'])
     @inertiaHead
 </head>

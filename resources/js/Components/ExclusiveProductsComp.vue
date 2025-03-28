@@ -26,14 +26,17 @@ const fetchProducts = async () => {
 const addToWishlist = async (productId) => {
     try {
         if(!isCookie){
-            alert("❌ Please login to add product to wishlist!");
+            // alert("❌ Please login to add product to wishlist!");
+            errorToast("Please login to add product to wishlist!");
             window.location.href = "/login";
             return;
         }
         await axios.post(`/add-product-wish/${productId}`);
-        alert("Product added to wishlist successfully!");
+        // alert("Product added to wishlist successfully!");
+        successToast("Product added to wishlist successfully!");
     } catch (error) {
-        console.log("Error adding product to wishlist");
+        // console.log("Error adding product to wishlist");
+        errorToast("Error adding product to wishlist");
     }
 };
 

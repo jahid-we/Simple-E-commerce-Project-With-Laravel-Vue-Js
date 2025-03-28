@@ -33,16 +33,19 @@ const productDetail = async () => {
 const addToWishlist = async (productId) => {
     try {
         if (!isCookie) {
-            alert("❌ Please login to add product to wishlist!");
+            // alert("❌ Please login to add product to wishlist!");
+            errorToast("Please login to add product to wishlist!");
             sessionStorage.setItem("last_location",window.location.href)
             window.location.href = "/login";
             return;
         }
         await axios.post(`/add-product-wish/${productId}`);
-        alert("Product added to wishlist successfully!");
+        // alert("Product added to wishlist successfully!");
+        successToast("Product added to wishlist successfully!");
         isWishlisted.value = true;
     } catch (error) {
-        console.log("Error adding product to wishlist");
+        // console.log("Error adding product to wishlist");
+        errorToast("Error adding product to wishlist");
     }
 };
 
@@ -56,19 +59,22 @@ const addToCart = async () => {
         };
 
         if (!isCookie) {
-            alert("❌ Please login to add product to cart!");
+            // alert("❌ Please login to add product to cart!");
+            errorToast("Please login to add product to cart!");
             sessionStorage.setItem("last_location",window.location.href)
             window.location.href = "/login";
             return;
         }
         await axios.post('/add-product-cart', postBody);
-        alert("Product added to cart successfully!");
+        // alert("Product added to cart successfully!");
+        successToast("Product added to cart successfully!");
         setTimeout(() => {
             window.location.href = "/ProductCartPage";
         }, 1000);
 
     } catch (error) {
-        console.log("Error adding product to cart");
+        // console.log("Error adding product to cart");
+        errorToast("Error adding product to cart");
     }
 };
 
