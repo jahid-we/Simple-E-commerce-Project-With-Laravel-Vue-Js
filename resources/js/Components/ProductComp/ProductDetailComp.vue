@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import axios from "axios";
 
+
+const loading = ref(false);
 const count = ref(1);
 const selectedColor = ref("");
 const selectedSize = ref("");
@@ -62,9 +64,13 @@ const addToCart = async () => {
             // alert("❌ Please login to add product to cart!");
             errorToast("Please login to add product to cart!");
             sessionStorage.setItem("last_location",window.location.href)
+            loading.value = true;
             window.location.href = "/login";
             return;
+        }else{
+            loading.value = false;
         }
+        loading.value = true;
         await axios.post('/add-product-cart', postBody);
         // alert("Product added to cart successfully!");
         successToast("Product added to cart successfully!");
@@ -75,6 +81,8 @@ const addToCart = async () => {
     } catch (error) {
         // console.log("Error adding product to cart");
         errorToast("Error adding product to cart");
+    }finally {
+        loading.value = false;
     }
 };
 
@@ -184,8 +192,12 @@ onMounted(productDetail);
                                 @click="addToCart"
                                 class="btn btn-fill-out btn-addtocart"
                                 type="button"
+                                :disabled="loading"
                             >
-                                <i class="icon-basket-loaded"></i> Add to cart
+                                <i class="icon-basket-loaded">
+                                </i>
+                                <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                                <span v-else>Add to cart</span>
                             </button>
                             <a
                                 class="add_wishlist text-decoration-none text-black"
