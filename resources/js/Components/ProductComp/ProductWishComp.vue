@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
+const loading = ref(false);
 const wishlists = ref([]);
 
 const getWishList = async () => {
@@ -21,6 +22,7 @@ const back = () => {
 // Remove product from wishlist
 const removeWish = async (id) => {
     try {
+        loading.value = true;
         await axios.post(`/delete-product-wish/${id}`);
         // alert("✅ Product removed from wishlist successfully!");
         successToast("Product removed from wishlist successfully!");
@@ -28,6 +30,8 @@ const removeWish = async (id) => {
     } catch (error) {
         // console.log("❌ Error removing product from wishlist");
         errorToast("Error removing product from wishlist");
+    }finally {
+        loading.value = false;
     }
 };
 
@@ -118,9 +122,10 @@ onMounted(getWishList);
                             </div>
                             <button
                                 class="btn remove btn-sm my-2 btn-danger"
-                                @click="removeWish(item.id)"
+                                @click="removeWish(item.id)" :disabled="loading"
                             >
-                                Remove
+                                <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                                <span v-else>Remove</span>
                             </button>
                         </div>
                     </div>

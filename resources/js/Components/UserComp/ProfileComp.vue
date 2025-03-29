@@ -2,6 +2,8 @@
 import { ref , onMounted } from 'vue';
 import axios from 'axios';
 
+const loading = ref(false);
+
 const customer = ref({
     name: '',
     address: '',
@@ -138,7 +140,7 @@ const ProfileCreateOrUpdate = async () => {
             errorToast('Please enter shipping phone');
             return;
         }
-
+        loading.value = true;
         let res = await axios.post('/update-or-create-customerProfile', postBody);
         if(res.data.msg == true) {
             // alert ( "✅"+res.data.data || '✅ Profile updated successfully!');
@@ -147,11 +149,12 @@ const ProfileCreateOrUpdate = async () => {
 
     }catch (error) {
         errorToast('Error updating profile');
+    }finally {
+        loading.value = false;
     }
 }
 
-// ****************************************❌ *********
-
+// *******************************************************
 
 </script>
 
@@ -167,7 +170,7 @@ const ProfileCreateOrUpdate = async () => {
             <div class="row">
                 <div class="col-md-6 col-lg-4 mb-4" v-for="(value, key) in customer" :key="key">
                     <label :for="key" class="form-label">{{ key.replace('_', ' ').toUpperCase() }}*</label>
-                    <input type="text" :id="key" class="form-control form-control-lg" v-model="customer[key]" />
+                    <input :readonly="loading" type="text" :id="key" class="form-control form-control-lg" v-model="customer[key]" />
                 </div>
             </div>
         </div>
@@ -182,7 +185,7 @@ const ProfileCreateOrUpdate = async () => {
             <div class="row">
                 <div class="col-md-6 col-lg-4 mb-4" v-for="(value, key) in shipping" :key="key">
                     <label :for="key" class="form-label">{{ key.replace('_', ' ').toUpperCase() }}*</label>
-                    <input type="text" :id="key" class="form-control form-control-lg" v-model="shipping[key]" />
+                    <input :readonly="loading" type="text" :id="key" class="form-control form-control-lg" v-model="shipping[key]" />
                 </div>
             </div>
         </div>
@@ -191,7 +194,10 @@ const ProfileCreateOrUpdate = async () => {
     <!-- Save Changes Button -->
     <div class="row">
         <div class="col-12 text-center">
-            <button @click="ProfileCreateOrUpdate" class="mb-4 btn btn-success btn-lg shadow-lg">Save Changes</button>
+            <button @click="ProfileCreateOrUpdate" class="mb-4 btn btn-success btn-lg shadow-lg" :disabled="loading">
+                <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                <span v-else>Save Changes</span>
+            </button>
         </div>
     </div>
 

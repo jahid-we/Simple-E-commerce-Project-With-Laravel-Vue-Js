@@ -10,6 +10,7 @@ const products = ref([]);
 const total = ref(0);
 const paymentMethod = ref([]);
 const showModal = ref(false);
+const loading = ref(false);
 
 const totalInWords = computed(() => {
     if (total.value === 0) return "Zero";
@@ -38,6 +39,7 @@ const totalPrice = async () => {
 
 const remove = async (ProductId) => {
     try {
+        loading.value = true;
         await axios.post(`/delete-product-cart/${ProductId}`);
         // alert("✅ Product removed from cart successfully!");
         successToast("Product removed from cart successfully!");
@@ -45,26 +47,31 @@ const remove = async (ProductId) => {
     } catch (error) {
         // console.log("❌ Error removing product from cart");
         errorToast("Error removing product from cart");
+    } finally {
+        loading.value = false;
     }
 };
 
 const checkOut = async () => {
-  try {
-    let res = await axios.get("/create-invoice");
-    paymentMethod.value = res.data.data[0].paymentMethod;
-    showModal.value = true;
-  } catch (error) {
-    console.log("❌ Error creating invoice");
-  }
+    try {
+        loading.value = true;
+        let res = await axios.get("/create-invoice");
+        paymentMethod.value = res.data.data[0].paymentMethod;
+        showModal.value = true;
+    } catch (error) {
+        console.log("❌ Error creating invoice");
+    }finally {
+        loading.value = false;
+    }
 };
 
 // Watch the showModal value and add/remove the "no-scroll" class to the body
 watch(showModal, (newValue) => {
-  if (newValue) {
-    document.body.style.overflow = 'hidden'; // Disable scrolling
-  } else {
-    document.body.style.overflow = ''; // Re-enable scrolling
-  }
+    if (newValue) {
+        document.body.style.overflow = "hidden"; // Disable scrolling
+    } else {
+        document.body.style.overflow = ""; // Re-enable scrolling
+    }
 });
 
 onMounted(getCartList);
@@ -91,10 +98,13 @@ onMounted(getCartList);
         </div>
         <!-- END CONTAINER-->
     </div>
-        <div v-show="products.length === 0" class="text-center text-danger m-5 h-100">
-                <h1>🚫</h1>
-                <h4>Cart List is Empty</h4>
-            </div>
+    <div
+        v-show="products.length === 0"
+        class="text-center text-danger m-5 h-100"
+    >
+        <h1>🚫</h1>
+        <h4>Cart List is Empty</h4>
+    </div>
     <div v-show="products.length !== 0" class="mt-5">
         <div class="container my-5">
             <div class="row">
@@ -134,12 +144,19 @@ onMounted(getCartList);
                                     </td>
                                     <td class="product-remove">
                                         <a
+                                            href="javascript:void(0)"
                                             class="remove"
                                             @click.prevent="
                                                 remove(item.product.id)
                                             "
-                                            ><i class="ti-close"></i
-                                        ></a>
+                                            :disabled="loading"
+                                        >
+                                            <span
+                                                v-if="loading"
+                                                class="spinner-border spinner-border-sm"
+                                            ></span>
+                                            <i v-else class="ti-close"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -150,20 +167,36 @@ onMounted(getCartList);
                                             <div
                                                 class="col-lg-4 col-md-6 mb-3 mb-md-0"
                                             >
-                                               <span class="fw-bold" id="total">
-                                                   Total: {{ total }} TK (Only)<br>
+                                                <span
+                                                    class="fw-bold"
+                                                    id="total"
+                                                >
+                                                    Total: {{ total }} TK
+                                                    (Only)<br />
                                                 </span>
-                                               <span class="fw-bold">In Words:  </span><span class="text-danger" >{{ totalInWords }} Taka</span>
+                                                <span class="fw-bold"
+                                                    >In Words: </span
+                                                ><span class="text-danger"
+                                                    >{{
+                                                        totalInWords
+                                                    }}
+                                                    Taka</span
+                                                >
                                             </div>
                                             <div
                                                 class="col-lg-8 col-md-6 text-start text-md-end"
                                             >
                                                 <button
                                                     @click.prevent="checkOut()"
-                                                    class="btn btn-line-fill btn-sm"
+                                                    class="btn btn-danger btn-sm"
                                                     type="submit"
+                                                    :disabled="loading"
                                                 >
-                                                    Check Out
+                                                    <span
+                                                        v-if="loading"
+                                                        class="spinner-border spinner-border-sm"
+                                                    ></span>
+                                                    <span v-else>Checkout</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -175,17 +208,13 @@ onMounted(getCartList);
                 </div>
             </div>
         </div>
-
-
     </div>
     <!-- Payment Method Modal -->
-        <PaymentMethodModalComp
-            v-model:showModal="showModal"
-            v-model:paymentMethod="paymentMethod"
-        />
+    <PaymentMethodModalComp
+        v-model:showModal="showModal"
+        v-model:paymentMethod="paymentMethod"
+    />
     <!-- End Payment Method Modal -->
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
