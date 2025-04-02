@@ -95,19 +95,10 @@ const isCookie = page.props.isCookie;
                             <li v-show="isCookie" ><a class="nav-link nav_item" href="/ProductWishPage"><i class="ti-heart"></i> Wish</a></li>
                             <li v-show="isCookie"><a class="nav-link nav_item" href="/ProductCartPage"><i class="linearicons-cart"></i> Cart</a></li>
                             <li>
-                                <a href="javascript:void(0);" class="nav-link search_trigger">
-                                    <i class="linearicons-magnifier"></i> Search
-                                </a>
-                                <div class="search_wrap">
-                                    <span class="close-search"><i class="ion-ios-close-empty"></i></span>
-                                    <form>
-                                        <input type="text" placeholder="Search" class="form-control" id="search_input">
-                                        <button type="submit" class="search_icon">
-                                            <i class="ion-ios-search-strong"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                                <div class="search_overlay"></div>
+                                <form class="d-flex mt-3">
+                                    <input class="form-control w-50 h-50 me-2" type="text" placeholder="Search">
+                                    <button class="btn btn-sm btn-outline-danger" type="button">Search</button>
+                                </form>
                             </li>
                         </ul>
                     </div>
