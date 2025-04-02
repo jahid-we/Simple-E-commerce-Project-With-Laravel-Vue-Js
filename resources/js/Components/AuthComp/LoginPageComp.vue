@@ -9,23 +9,24 @@ const login = async () => {
     loading.value = true;
     try {
         if (!email.value) {
-            // alert("❌ Please enter your email");
             errorToast("Please enter your email");
             return;
         }
         let res = await axios.post(`/user-login/${email.value}`);
         if (res.data.msg === true) {
             localStorage.setItem("email", email.value);
-            // alert("✅ OTP sent to your email");
             successToast("OTP sent to your email");
             setTimeout(() => {
                 window.location.href = "/verify";
-            },1000);
+            }, 1000);
+        } else {
+            errorToast(res.data.data); // Handle error from response
         }
     } catch (error) {
-        errorToast("Error sending OTP");
-        console.log("Error sending OTP");
-    }finally {
+        const errorMessage = error.response?.data?.data || "An error occurred. Please try again.";
+        errorToast(errorMessage);
+        console.log("Error sending OTP:", error);
+    } finally {
         loading.value = false;
     }
 };
@@ -33,8 +34,9 @@ const login = async () => {
 // Back button function
 const back = () => {
     window.history.back();
-}
+};
 </script>
+
 
 <template>
 <div class="login_register_wrap section">

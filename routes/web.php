@@ -24,8 +24,8 @@ use App\Http\Controllers\customerProfile\customerProfileController;
 // =============== Authentication Routes ===============
 // =====================================================
 Route::controller(authController::class)->group(function () {
-    Route::post('/user-login/{email}', 'userLogin'); // Authenticate user using email
-    Route::post('/verify-otp/{email}/{otp}', 'verifyOTP'); // Verify OTP for authentication
+    Route::middleware(['throttle:custom'])->post('/user-login/{email}', 'userLogin'); // Authenticate user using email
+    Route::middleware(['throttle:custom'])->post('/verify-otp/{email}/{otp}', 'verifyOTP'); // Verify OTP for authentication
     Route::middleware([TokenVerification::class])->get('/logout', 'logout'); // Logout user (requires authentication)
 });
 
@@ -63,7 +63,7 @@ Route::controller(categoryController::class)->group(function () {
 Route::controller(customerProfileController::class)->middleware([TokenVerification::class])->group(function () {
     Route::post('/customer-profile/{userId}', 'getCustomerProfile'); // Retrieve profile details for a specific user
     Route::get('/customer-profile-by-id', 'getCustomerProfileById'); // Retrieve profile details for the authenticated user
-    Route::post('/update-or-create-customerProfile', 'updateOrCreateCustomerProfile'); // Create or update customer profile
+    Route::middleware(['throttle:custom'])->post('/update-or-create-customerProfile', 'updateOrCreateCustomerProfile'); // Create or update customer profile
     Route::post('/delete-customer-profile', 'deleteCustomerProfile'); // Delete customer profile
 });
 
