@@ -1,58 +1,63 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { usePage } from "@inertiajs/vue3";
-import axios from "axios";
+import { ref, onMounted } from "vue"; // Importing Vue Composition API functions
+import { usePage } from "@inertiajs/vue3"; // Importing Inertia.js for page properties
+import axios from "axios"; // Importing Axios for making HTTP requests
 
-
-const loading = ref(false);
-const count = ref(1);
-const selectedColor = ref("");
-const selectedSize = ref("");
-const isWishlisted = ref(false);
-const page = usePage();
-const productId = page.props.productId;
-const productDetails = ref([]);
+// Reactive state variables
+const loading = ref(false); // To manage the loading state during API calls
+const count = ref(1); // To track the quantity of the product
+const selectedColor = ref(""); // To store the selected color
+const selectedSize = ref(""); // To store the selected size
+const isWishlisted = ref(false); // To track if the product is added to wishlist
+const page = usePage(); // Using Inertia.js to access page props
+const productId = page.props.productId; // Extracting the product ID from page props
+const productDetails = ref([]); // To store the details of the product fetched from the server
 const props = defineProps({
-    isCookie: Boolean,
+    isCookie: Boolean, // Defining a prop to check if the user is logged in through cookies
 });
-const isCookie = page.props.isCookie;
-const fullImage= ref("");
+const isCookie = page.props.isCookie; // Extracting the user's login status from page props
+const fullImage = ref(""); // To store the image that will be displayed
 
-const setImage=(img)=>{
-    fullImage.value=img;
-}
+// Function to change the full product image when a thumbnail is clicked
+const setImage = (img) => {
+    fullImage.value = img; // Updating the full image to the clicked thumbnail
+};
 
+// Function to fetch product details from the server
 const productDetail = async () => {
     try {
+        // Fetching the product details using the product ID
         let res = await axios.get(`/ProductDetailsById/${productId}`);
-        productDetails.value = res.data.data;
-        fullImage.value = productDetails.value[0]?.img1;
+        productDetails.value = res.data.data; // Storing the fetched product details
+        fullImage.value = productDetails.value[0]?.img1; // Setting the first image as the default full image
     } catch (error) {
-        console.log("Error fetching product detail");
+        console.log("Error fetching product detail"); // Logging error if fetching fails
     }
 };
 
+// Function to add the product to the wishlist
 const addToWishlist = async (productId) => {
     try {
+        // If the user is not logged in, redirect them to the login page
         if (!isCookie) {
-            // alert("❌ Please login to add product to wishlist!");
-            errorToast("Please login to add product to wishlist!");
-            sessionStorage.setItem("last_location",window.location.href)
-            window.location.href = "/login";
+            errorToast("Please login to add product to wishlist!"); // Show an error message
+            sessionStorage.setItem("last_location", window.location.href); // Store the current page URL for later redirection
+            window.location.href = "/login"; // Redirect the user to the login page
             return;
         }
+        // Sending request to add the product to the wishlist
         await axios.post(`/add-product-wish/${productId}`);
-        // alert("Product added to wishlist successfully!");
-        successToast("Product added to wishlist successfully!");
-        isWishlisted.value = true;
+        successToast("Product added to wishlist successfully!"); // Show success message
+        isWishlisted.value = true; // Mark the product as wishlisted
     } catch (error) {
-        // console.log("Error adding product to wishlist");
-        errorToast("Error adding product to wishlist");
+        errorToast("Error adding product to wishlist"); // Show error message if request fails
     }
 };
 
+// Function to add the product to the cart
 const addToCart = async () => {
     try {
+        // Preparing the data to send to the server
         let postBody = {
             product_id: productId,
             color: selectedColor.value,
@@ -60,34 +65,35 @@ const addToCart = async () => {
             qty: count.value,
         };
 
+        // If the user is not logged in, prompt them to login
         if (!isCookie) {
-            // alert("❌ Please login to add product to cart!");
-            errorToast("Please login to add product to cart!");
-            sessionStorage.setItem("last_location",window.location.href)
-            loading.value = true;
-            window.location.href = "/login";
+            errorToast("Please login to add product to cart!"); // Show error message
+            sessionStorage.setItem("last_location", window.location.href); // Store the current page URL for later redirection
+            loading.value = true; // Set the loading state to true
+            window.location.href = "/login"; // Redirect the user to the login page
             return;
-        }else{
-            loading.value = false;
+        } else {
+            loading.value = false; // Reset loading state if user is logged in
         }
-        loading.value = true;
+        loading.value = true; // Set loading state to true while making the request
+        // Sending request to add the product to the cart
         await axios.post('/add-product-cart', postBody);
-        // alert("Product added to cart successfully!");
-        successToast("Product added to cart successfully!");
+        successToast("Product added to cart successfully!"); // Show success message
         setTimeout(() => {
-            window.location.href = "/ProductCartPage";
+            window.location.href = "/ProductCartPage"; // Redirect the user to the cart page after 1 second
         }, 1000);
 
     } catch (error) {
-        // console.log("Error adding product to cart");
-        errorToast("Error adding product to cart");
-    }finally {
-        loading.value = false;
+        errorToast("Error adding product to cart"); // Show error message if request fails
+    } finally {
+        loading.value = false; // Reset loading state after the operation completes
     }
 };
 
+// Fetching product details when the component is mounted
 onMounted(productDetail);
 </script>
+
 
 <template>
     <div class="section">

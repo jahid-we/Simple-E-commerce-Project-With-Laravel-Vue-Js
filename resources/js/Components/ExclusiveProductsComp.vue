@@ -1,48 +1,49 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { usePage} from "@inertiajs/vue3";
-import axios from "axios";
+import { ref, onMounted, watch } from "vue"; // Importing Vue Composition API
+import { usePage } from "@inertiajs/vue3"; // Importing Inertia.js for page props
+import axios from "axios"; // Importing Axios for making HTTP requests
 
+// Define categories for filtering products
 const categories = ["new", "popular", "top", "special", "trending", "regular"];
-const activeCategory = ref("new");
-const products = ref([]);
-const page = usePage();
+const activeCategory = ref("new"); // Set default category to "new"
+const products = ref([]); // Array to hold the fetched products
+const page = usePage(); // Get page props from Inertia.js
 const props = defineProps({
-  isCookie: Boolean,
+  isCookie: Boolean, // Boolean to check if the user is logged in (using cookies)
 });
-const isCookie = page.props.isCookie;
+const isCookie = page.props.isCookie; // Check if user is logged in via cookies
 
+// Function to fetch products based on the selected category
 const fetchProducts = async () => {
     try {
-        let res = await axios.get(`/product-by-remark/${activeCategory.value}`);
-        products.value = res.data.data;
+        let res = await axios.get(`/product-by-remark/${activeCategory.value}`); // API request to fetch products
+        products.value = res.data.data; // Update products with the fetched data
     } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching products:", error); // Log error if fetching fails
     }
 };
 
-// Add Wishlist  Function  Start ********************************
-
+// Add product to wishlist function
 const addToWishlist = async (productId) => {
     try {
-        if(!isCookie){
+        if(!isCookie){ // Check if the user is logged in
             // alert("❌ Please login to add product to wishlist!");
-            errorToast("Please login to add product to wishlist!");
-            window.location.href = "/login";
+            errorToast("Please login to add product to wishlist!"); // Show login message
+            window.location.href = "/login"; // Redirect to login page
             return;
         }
-        await axios.post(`/add-product-wish/${productId}`);
+        await axios.post(`/add-product-wish/${productId}`); // API request to add product to wishlist
         // alert("Product added to wishlist successfully!");
-        successToast("Product added to wishlist successfully!");
+        successToast("Product added to wishlist successfully!"); // Show success message
     } catch (error) {
         // console.log("Error adding product to wishlist");
-        errorToast("Error adding product to wishlist");
+        errorToast("Error adding product to wishlist"); // Show error message if adding fails
     }
 };
 
-// Fetch products on component mount and when the category changes
-onMounted(fetchProducts);
-watch(activeCategory, fetchProducts);
+// Fetch products when component is mounted and when the active category changes
+onMounted(fetchProducts); // Fetch products initially on mount
+watch(activeCategory, fetchProducts); // Re-fetch products when category changes
 </script>
 
 <template>

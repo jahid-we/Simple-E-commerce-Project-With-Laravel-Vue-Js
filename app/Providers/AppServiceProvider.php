@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
     protected function configureRateLimiting(): void
     {
     RateLimiter::for('custom', function (Request $request) {
-    return Limit::perMinute(3)->by($request->ip())->response(function ()
+    return Limit::perMinute(5)->by($request->ip())->response(function ()
     {
     return ResponseHelper::Out(false, 'Too many requests. Please try again later...', 429);
     });

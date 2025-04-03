@@ -1,23 +1,31 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted } from "vue"; // Import necessary Vue composition API hooks
+import axios from "axios"; // Import Axios for making HTTP requests
 
+// Reactive reference to store the list of categories fetched from the API
 const categories = ref([]);
 
+// Function to fetch the list of categories from the server
 const fetchCategories = async () => {
     try {
+        // Send GET request to fetch category list
         let res = await axios.get("/category-list");
+
+        // Store the fetched data in the 'categories' reactive reference
         categories.value = res.data.data; // Assuming the response contains an array of categories
     } catch (error) {
+        // Handle any errors that occur during the request
         console.error("Error fetching categories", error);
     }
 };
 
+// Fetch the category list when the component is mounted
 onMounted(() => {
-    fetchCategories();
+    fetchCategories(); // Trigger the API call when the component is mounted
 });
 
 </script>
+
 
 <template>
   <div class="section ">

@@ -1,33 +1,35 @@
 <script setup>
-import { usePage, Link } from "@inertiajs/vue3";
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { usePage, Link } from "@inertiajs/vue3"; // Import Inertia.js hooks for routing and page props
+import { ref, onMounted } from "vue"; // Import Vue Composition API for reactivity and lifecycle hooks
+import axios from "axios"; // Import Axios for making HTTP requests
 
+// Reactive reference to store categories fetched from the server
 const categories = ref([]);
 
+// Function to fetch categories from the server
 const fetchCategories = async () => {
     try {
-        let res = await axios.get("/category-list");
+        let res = await axios.get("/category-list"); // API request to fetch categories
         categories.value = res.data.data; // Assuming the response contains an array of categories
     } catch (error) {
-        console.error("Error fetching categories", error);
+        console.error("Error fetching categories", error); // Log error if fetching fails
     }
 };
 
+// Fetch categories when the component is mounted
 onMounted(() => {
     fetchCategories();
 });
 
-
+// Inertia.js page props for checking login status
 const page = usePage();
-// Check if the user is logged in
+// Define a prop for isCookie to check login status using cookies
 const props = defineProps({
   isCookie: Boolean,
 });
-const isCookie = page.props.isCookie;
-
-
+const isCookie = page.props.isCookie; // Check if user is logged in based on cookies
 </script>
+
 
 <template>
     <header  class="header_wrap fixed-top header_with_topbar">

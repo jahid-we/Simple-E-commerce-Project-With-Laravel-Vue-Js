@@ -1,42 +1,45 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted } from "vue"; // Importing Vue Composition API functions
+import axios from "axios"; // Importing Axios for HTTP requests
 
-const loading = ref(false);
-const wishlists = ref([]);
+// Reactive state variables
+const loading = ref(false); // To track the loading state during API calls
+const wishlists = ref([]); // To store the list of products in the wishlist
 
+// Function to fetch the wishlist products from the server
 const getWishList = async () => {
     try {
+        // Sending a GET request to fetch the wishlist data
         const res = await axios.get("/product-wish");
-        wishlists.value = res.data.data;
+        wishlists.value = res.data.data; // Storing the response data (wishlist items)
     } catch (error) {
-        console.log(res.data.data);
+        console.log(res.data.data); // Logging the error (in case of failure)
     }
 };
 
-// Back Function to go previous page
+// Function to navigate the user back to the previous page
 const back = () => {
-    window.history.back();
+    window.history.back(); // Navigates back to the previous page in browser history
 };
 
-// Remove product from wishlist
+// Function to remove a product from the wishlist
 const removeWish = async (id) => {
     try {
-        loading.value = true;
-        await axios.post(`/delete-product-wish/${id}`);
-        // alert("✅ Product removed from wishlist successfully!");
-        successToast("Product removed from wishlist successfully!");
-        getWishList();
+        loading.value = true; // Setting loading to true while the API request is in progress
+        await axios.post(`/delete-product-wish/${id}`); // Sending a POST request to remove the product from wishlist
+        successToast("Product removed from wishlist successfully!"); // Show success message
+        getWishList(); // Fetch the updated wishlist after removal
     } catch (error) {
-        // console.log("❌ Error removing product from wishlist");
-        errorToast("Error removing product from wishlist");
-    }finally {
-        loading.value = false;
+        errorToast("Error removing product from wishlist"); // Show error message if request fails
+    } finally {
+        loading.value = false; // Reset loading state after the operation
     }
 };
 
+// Fetching the wishlist data when the component is mounted
 onMounted(getWishList);
 </script>
+
 
 <template>
     <!-- START SECTION BREADCRUMB -->

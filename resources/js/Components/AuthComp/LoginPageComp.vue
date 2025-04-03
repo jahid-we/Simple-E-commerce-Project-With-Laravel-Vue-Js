@@ -1,42 +1,47 @@
 <script setup>
-import { ref } from "vue";
-import axios from "axios";
+import { ref } from "vue"; // Import ref from Vue for reactive variables
+import axios from "axios"; // Import axios for API requests
 
-const email = ref("");
-const loading = ref(false);
+// Reactive variables
+const email = ref(""); // Holds the email input
+const loading = ref(false); // Controls the loading state
 
+// Login function
 const login = async () => {
-    loading.value = true;
+    // Trim email input to remove extra spaces and check if empty
+    if (!email.value.trim()) {
+        errorToast("Please enter your email");
+        return;
+    }
+
+    loading.value = true; // Set loading state to prevent multiple clicks
     try {
-        if (!email.value) {
-            errorToast("Please enter your email");
-            return;
-        }
-        let res = await axios.post(`/user-login/${email.value}`);
+        // Send login request with email
+        const res = await axios.post(`/user-login/${email.value.trim()}`);
+
+        // If login is successful
         if (res.data.msg === true) {
-            localStorage.setItem("email", email.value);
-            successToast("OTP sent to your email");
-            setTimeout(() => {
-                window.location.href = "/verify";
-            }, 1000);
+            localStorage.setItem("email", email.value); // Store email in local storage
+            successToast("OTP sent to your email"); // Show success message
+
+            // Redirect to verification page after 1 second
+            setTimeout(() => window.location.href = "/verify", 1000);
         } else {
-            errorToast(res.data.data); // Handle error from response
+            errorToast(res.data.data); // Show error message from API response
         }
     } catch (error) {
-        const errorMessage = error.response?.data?.data || "An error occurred. Please try again.";
-        errorToast(errorMessage);
-        console.log("Error sending OTP:", error);
+        // Handle any API errors and display a meaningful message
+        errorToast(error.response?.data?.data || "An error occurred. Please try again.");
     } finally {
-        loading.value = false;
+        loading.value = false; // Reset loading state
     }
 };
 
 // Back button function
 const back = () => {
-    window.history.back();
+    if (!loading.value) window.history.back(); // Prevent navigation while loading
 };
 </script>
-
 
 <template>
 <div class="login_register_wrap section">
@@ -48,16 +53,22 @@ const back = () => {
                         <div class="heading_s1">
                             <h3>Login</h3>
                         </div>
+
+                        <!-- Email Input Field -->
                         <div class="form-group mb-3">
-                            <input :readonly="loading" v-model="email" type="email" required class="form-control" placeholder="Your Email">
+                            <input v-model="email" type="email" required class="form-control" placeholder="Your Email" :readonly="loading">
                         </div>
+
+                        <!-- Login Button -->
                         <div class="form-group mb-3">
                             <button @click="login" type="submit" class="btn btn-fill-out btn-block" :disabled="loading">
-                            <span v-if="loading" class="spinner-border spinner-border-sm"></span>
-                            <span v-else>Login</span>
+                                <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                                <span v-else>Login</span>
                             </button>
                         </div>
-                        <button @click="back" type="submit" class="btn btn-fill-out btn-block">Back</button>
+
+                        <!-- Back Button -->
+                        <button @click="back" type="submit" class="btn btn-fill-out btn-block" :disabled="loading">Back</button>
                     </div>
                 </div>
             </div>
@@ -65,5 +76,3 @@ const back = () => {
     </div>
 </div>
 </template>
-
-<style scoped></style>

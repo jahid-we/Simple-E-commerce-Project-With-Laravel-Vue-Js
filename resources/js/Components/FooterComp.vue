@@ -48,9 +48,9 @@
                     <div class="widget">
                         <h6 class="widget_title">My Account</h6>
                         <ul class="widget_links">
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Wish List</a></li>
-                            <li><a href="#">Cart List</a></li>
+                            <li><a href="/profile">Profile</a></li>
+                            <li><a href="/ProductWishPage">Wish List</a></li>
+                            <li><a href="/ProductCartPage">Cart List</a></li>
                             <li><a href="#">Order History</a></li>
                         </ul>
                     </div>

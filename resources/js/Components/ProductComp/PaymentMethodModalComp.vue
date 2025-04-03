@@ -1,21 +1,19 @@
 <script setup>
-import { ref } from "vue";
-import { defineProps } from "vue";
+import { ref, defineModel } from "vue"; // Import defineModel
 
-
-const showModal=defineModel("showModal");
+// Define reactive models for modal visibility and payment methods
+const showModal = defineModel("showModal");
 const paymentMethod = defineModel("paymentMethod");
 
-
-
+// Function to close the modal
 const closeModal = () => {
   showModal.value = false;
 };
-
 </script>
 
 <template>
-   <div v-if="showModal" class="modal-overlay">
+  <!-- Modal Overlay -->
+  <div v-if="showModal" class="modal-overlay">
     <div class="modal-dialog">
       <div class="modal-content">
         <!-- Modal Header -->
@@ -37,7 +35,7 @@ const closeModal = () => {
       </div>
     </div>
   </div>
-  </template>
+</template>
 
 <style scoped>
 /* Modal Overlay */
@@ -59,7 +57,7 @@ const closeModal = () => {
   width: 100%;
   max-width: 380px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-  max-height: 90vh; /* Prevents overflow */
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
 }
@@ -67,7 +65,7 @@ const closeModal = () => {
 /* Scrollable Body */
 .modal-body {
   overflow-y: auto;
-  max-height: 400px; /* Scroll effect */
+  max-height: 400px;
   padding: 25px;
 }
 

@@ -1,51 +1,52 @@
 <script setup>
-import { ref } from "vue";
-import axios from "axios";
-const otp = ref("");
-const loading = ref(false);
+import { ref } from "vue"; // Import ref from Vue for reactive variables
+import axios from "axios"; // Import axios to handle HTTP requests
+
+// Reactive variables
+const otp = ref(""); // Holds the OTP input value
+const loading = ref(false); // Controls the loading state while waiting for a response
+
+// Function to verify the OTP
 const verify = async () => {
-    loading.value = true;
+    loading.value = true; // Set loading state to prevent multiple clicks
     try {
-        let email = localStorage.getItem("email");
-        if(!email) {
-            // alert("❌ Email not found");
-            errorToast(" Email not found");
+        let email = localStorage.getItem("email"); // Get email from localStorage
+        if(!email) { // If no email is found in localStorage
+            errorToast("Email not found"); // Show an error toast
             return;
-        }else if(!otp.value) {
-            // alert("❌ Please enter verification code");
-            errorToast(" Please enter verification code");
+        } else if(!otp.value) { // If OTP is not entered
+            errorToast("Please enter verification code"); // Show an error toast
             return;
-        }else if(otp.value.length !== 6) {
-            // alert("❌ Verification code must be 6 digits");
-            errorToast(" Verification code must be 6 digits");
+        } else if(otp.value.length !== 6) { // If OTP is not 6 digits long
+            errorToast("Verification code must be 6 digits"); // Show an error toast
             return;
         }
+
+        // Send the OTP to the backend for verification
         let res = await axios.post(`/verify-otp/${email}/${otp.value}`);
-        if (res.data.msg === true) {
-            // alert("✅ Verification successful");
-            successToast("Verification successful");
+        if (res.data.msg === true) { // If verification is successful
+            successToast("Verification successful"); // Show success toast
+
+            // Redirect user to the previous location or home page
             setTimeout(() => {
-                if(sessionStorage.getItem("last_location")){
-                        window.location.href=sessionStorage.getItem("last_location")
-                    }
-                    else{
-                        window.location.href="/"
-                    }
-            },1000);
+                if(sessionStorage.getItem("last_location")) {
+                    window.location.href = sessionStorage.getItem("last_location");
+                } else {
+                    window.location.href = "/"; // Redirect to home if no last location
+                }
+            }, 1000);
         }
     } catch (error) {
-        // alert(error.response.data.data);
-        errorToast(error.response.data.data);
-    }finally {
-        loading.value = false;
+        errorToast(error.response?.data?.data); // Show error if the API request fails
+    } finally {
+        loading.value = false; // Reset loading state once the request is completed
     }
-}
+};
 
-// Back button function
+// Back button function to navigate to the previous page
 const back = () => {
-    window.history.back();
+    window.history.back(); // Go back to the previous page in the browser history
 }
-
 </script>
 
 <template>
@@ -58,16 +59,22 @@ const back = () => {
                         <div class="heading_s1">
                             <h3>Verification</h3>
                         </div>
-                            <div class="form-group mb-3">
-                                <input :readonly="loading" id="code" v-model="otp" type="text" required class="form-control" name="email" placeholder="Verification Code">
-                            </div>
-                            <div class="form-group mb-3">
-                                <button @click="verify" type="submit" class="btn btn-fill-out btn-block" name="login" :disabled="loading">
-                                    <span v-if="loading" class="spinner-border spinner-border-sm"></span>
-                                    <span v-else>Verify</span>
-                                </button>
-                            </div>
-                            <button @click="back" type="submit" class="btn btn-fill-out btn-block" name="login">Back</button>
+
+                        <!-- OTP Input Field -->
+                        <div class="form-group mb-3">
+                            <input :readonly="loading" id="code" v-model="otp" type="text" required class="form-control" placeholder="Verification Code">
+                        </div>
+
+                        <!-- Verify Button -->
+                        <div class="form-group mb-3">
+                            <button @click="verify" type="submit" class="btn btn-fill-out btn-block" :disabled="loading">
+                                <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+                                <span v-else>Verify</span>
+                            </button>
+                        </div>
+
+                        <!-- Back Button -->
+                        <button @click="back" type="submit" class="btn btn-fill-out btn-block" :disabled="loading" >Back</button>
                     </div>
                 </div>
             </div>
@@ -77,5 +84,5 @@ const back = () => {
 </template>
 
 <style scoped>
-
+/* Add your styles here */
 </style>

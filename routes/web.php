@@ -129,7 +129,7 @@ Route::controller(productCartController::class)->middleware([TokenVerification::
 // ==================== Invoice Routes =================
 // =====================================================
 Route::controller(invoiceController::class)->middleware([TokenVerification::class])->group(function () {
-    Route::get('/create-invoice', 'createInvoice'); // Create an invoice for a purchase
+    Route::middleware(['throttle:custom'])->get('/create-invoice', 'createInvoice'); // Create an invoice for a purchase
     Route::get('/get-invoices', 'getInvoice'); // Retrieve list of invoices
 });
 

@@ -1,36 +1,44 @@
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from "vue";
-import { usePage, Link } from "@inertiajs/vue3";
+import { ref, onMounted, onUnmounted, nextTick } from "vue"; // Import necessary Vue composition API hooks
+import { usePage, Link } from "@inertiajs/vue3"; // Import Inertia.js hooks for page props and routing
+
+// Reactive reference to store product slider data from Inertia page props
 const page = usePage();
 const productSliders = ref([]);
+
+// Reference to the carousel DOM element and Flickity instance
 const carousel = ref(null);
 let flickityInstance = null;
 
+// Fetch product slider data and initialize Flickity carousel on component mount
 onMounted(async () => {
+    // Retrieve the product slider data from Inertia.js page props
     productSliders.value = page.props.productSlider || [];
 
-    // Ensure DOM updates before initializing Flickity
+    // Ensure DOM is updated before initializing Flickity (necessary for proper DOM manipulation)
     await nextTick();
 
+    // Initialize Flickity if the carousel element is available
     if (carousel.value) {
         flickityInstance = new Flickity(carousel.value, {
-            cellAlign: "center",
-            contain: true,
-            wrapAround: true,
-            autoPlay: 3000,
-            prevNextButtons: false,
-            pageDots: true,
+            cellAlign: "center", // Align cells to the center
+            contain: true, // Prevent overflow of items outside the container
+            wrapAround: true, // Enable continuous loop of the carousel
+            autoPlay: 3000, // Set auto-play interval to 3 seconds
+            prevNextButtons: false, // Disable the default previous/next buttons
+            pageDots: true, // Enable navigation dots at the bottom of the carousel
         });
     }
 });
 
-// Clean up Flickity instance on unmount
+// Cleanup Flickity instance when the component is unmounted
 onUnmounted(() => {
     if (flickityInstance) {
-        flickityInstance.destroy();
+        flickityInstance.destroy(); // Destroy Flickity instance to prevent memory leaks
     }
 });
 </script>
+
 
 <template>
     <div class="banner_section slide_medium shop_banner_slider staggered-animation-wrap mb-5 ">

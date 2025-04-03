@@ -1,23 +1,31 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted } from "vue"; // Import necessary Vue composition API hooks
+import axios from "axios"; // Import Axios for making HTTP requests
 
+// Reactive reference to store the list of brands fetched from the API
 const brands = ref([]);
 
+// Function to fetch the list of brands from the server
 const getBrands = async () => {
     try {
+        // Send GET request to fetch brand list
         let res = await axios.get("/brand-list");
+
+        // Store the fetched data in the 'brands' reactive reference
         brands.value = res.data.data; // Assuming the response contains an array of brands
     } catch (error) {
+        // Handle any errors that occur during the request
         console.error("Error fetching brands", error);
     }
 };
 
+// Fetch the brand list when the component is mounted
 onMounted(() => {
-    getBrands();
+    getBrands(); // Trigger the API call when the component is mounted
 });
 
 </script>
+
 
 <template>
   <div class="section py-5">
